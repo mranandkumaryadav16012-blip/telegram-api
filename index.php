@@ -23,3 +23,4 @@ $link = "https://api.telegram.org/file/bot$BOT_TOKEN/$file_path";
 
 header("Location: $link");
 exit;
+
