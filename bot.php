@@ -9,7 +9,6 @@ $update = json_decode($input, true);
 // debug (optional)
 file_put_contents("log.txt", $input);
 
-// check message
 if(isset($update['message'])){
 
     $msg = $update['message'];
@@ -18,39 +17,33 @@ if(isset($update['message'])){
     $file_id = "";
     $name = "file";
 
-    // 📁 DOCUMENT (APK upload / forward)
+    // 📁 DOCUMENT (upload + forward both)
     if(isset($msg['document'])){
         $file_id = $msg['document']['file_id'];
         $name = $msg['document']['file_name'] ?? "file.apk";
     }
 
-    // 🖼 PHOTO (optional support)
-    elseif(isset($msg['photo'])){
-        $file_id = end($msg['photo'])['file_id'];
-        $name = "photo.jpg";
-    }
-
-    // 🎥 VIDEO (optional support)
-    elseif(isset($msg['video'])){
-        $file_id = $msg['video']['file_id'];
-        $name = "video.mp4";
-    }
-
-    // 🎵 AUDIO (optional support)
-    elseif(isset($msg['audio'])){
-        $file_id = $msg['audio']['file_id'];
-        $name = "audio.mp3";
-    }
-
-    // अगर कुछ भी नहीं मिला
+    // अगर file नहीं मिला
     if($file_id == ""){
-        file_get_contents("https://api.telegram.org/bot".$BOT_TOKEN."/sendMessage?chat_id=".$chat_id."&text=❌ Please send a file (APK)");
-        exit;
+        $text = "❌ Please send APK file (upload or forward)";
+    } else {
+        $text = "✅ ".$name."\n\n📌 File ID:\n".$file_id;
     }
 
-    // reply message
-    $text = "✅ File: ".$name."\n\n📌 File ID:\n".$file_id;
+    // 🔥 CURL request (important)
+    $url = "https://api.telegram.org/bot".$BOT_TOKEN."/sendMessage";
 
-    // send reply
-    file_get_contents("https://api.telegram.org/bot".$BOT_TOKEN."/sendMessage?chat_id=".$chat_id."&text=".urlencode($text));
+    $data = [
+        "chat_id" => $chat_id,
+        "text" => $text
+    ];
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+
+    curl_exec($ch);
+    curl_close($ch);
 }
