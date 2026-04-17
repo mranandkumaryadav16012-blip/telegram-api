@@ -1,6 +1,6 @@
 <?php
 
-$BOT_TOKEN = getenv("8653912920:AAGk2yd8fAThTL67CouDtj8gmlDTsQEOdyc");
+$BOT_TOKEN = getenv("8653912920:AAG3AX1_hFUKfk37bB1M5ojcohd4kTIUrV8");
 
 $update = json_decode(file_get_contents("php://input"), true);
 
