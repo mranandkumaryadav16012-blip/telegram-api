@@ -14,3 +14,4 @@ if(isset($update['message']['document'])){
 
     file_get_contents("https://api.telegram.org/bot$BOT_TOKEN/sendMessage?chat_id=".$chat_id."&text=".urlencode($msg));
 }
+
